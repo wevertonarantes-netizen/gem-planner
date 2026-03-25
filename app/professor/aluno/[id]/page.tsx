@@ -90,18 +90,18 @@ function DateField({ label, value, onChange }: DateFieldProps) {
         {label}
       </p>
 
-      <div className="mt-2 flex items-center gap-2">
+      <div className="mt-2 flex flex-col gap-2 md:flex-row md:items-center">
         <input
           type="date"
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
-          className="min-w-0 flex-1 rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900"
+          className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 md:flex-1"
         />
 
         <button
           type="button"
           onClick={() => onChange("")}
-          className="shrink-0 rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-100"
+          className="w-full rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100 md:w-auto md:shrink-0"
         >
           Limpar
         </button>
@@ -692,7 +692,7 @@ export default function FichaAlunoPage() {
               >
                 {!estaEditando ? (
                   <>
-                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                       <div>
                         <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
                           {tarefa.tipo === "hino" ? "Hino extra" : "Lição de método"}
@@ -730,7 +730,7 @@ export default function FichaAlunoPage() {
                     </div>
 
                     {tarefa.tipo === "hino" ? (
-                      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <div className="mt-4 grid gap-3 xl:grid-cols-2">
                         <DateField
                           label="Soprano"
                           value={tarefa.soprano}
