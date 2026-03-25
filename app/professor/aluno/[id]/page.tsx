@@ -77,6 +77,39 @@ function tarefaExtraConcluida(tarefa: TarefaExtra, aluno: Aluno | null) {
   return Boolean(dataPrincipal && dataAlternativa);
 }
 
+type DateFieldProps = {
+  label: string;
+  value: string | null;
+  onChange: (value: string) => void;
+};
+
+function DateField({ label, value, onChange }: DateFieldProps) {
+  return (
+    <div className="rounded-xl border border-zinc-200 bg-white p-3 sm:p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+        {label}
+      </p>
+
+      <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+        <input
+          type="date"
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-zinc-900"
+        />
+
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="rounded-xl border border-red-300 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+        >
+          Limpar
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function FichaAlunoPage() {
   const router = useRouter();
   const params = useParams();
@@ -187,10 +220,7 @@ export default function FichaAlunoPage() {
 
       if (erroExtras) {
         console.error(erroExtras);
-        showToast(
-          `Erro ao buscar tarefas extras: ${erroExtras.message}`,
-          "error"
-        );
+        showToast(`Erro ao buscar tarefas extras: ${erroExtras.message}`, "error");
         setCarregando(false);
         return;
       }
@@ -375,9 +405,7 @@ export default function FichaAlunoPage() {
 
   const totalGeral = tarefasExtras.length;
   const totalHinos = tarefasExtras.filter((tarefa) => tarefa.tipo === "hino").length;
-  const totalMetodos = tarefasExtras.filter(
-    (tarefa) => tarefa.tipo === "metodo"
-  ).length;
+  const totalMetodos = tarefasExtras.filter((tarefa) => tarefa.tipo === "metodo").length;
   const totalPassados = tarefasExtras.filter((tarefa) =>
     tarefaExtraConcluida(tarefa, aluno)
   ).length;
@@ -399,10 +427,10 @@ export default function FichaAlunoPage() {
 
   if (carregando) {
     return (
-      <main className="min-h-screen bg-zinc-100 px-4 py-6">
+      <main className="min-h-screen bg-zinc-100 px-4 py-5 sm:px-6 sm:py-6">
         <div className="mx-auto max-w-5xl">
           <Header title="Painel do Professor" />
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
             <p className="text-zinc-600">Carregando ficha do aluno...</p>
           </div>
         </div>
@@ -412,10 +440,10 @@ export default function FichaAlunoPage() {
 
   if (!aluno) {
     return (
-      <main className="min-h-screen bg-zinc-100 px-4 py-6">
+      <main className="min-h-screen bg-zinc-100 px-4 py-5 sm:px-6 sm:py-6">
         <div className="mx-auto max-w-5xl">
           <Header title="Painel do Professor" />
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
             <p className="text-zinc-600">Aluno não encontrado.</p>
           </div>
         </div>
@@ -424,7 +452,7 @@ export default function FichaAlunoPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-100 px-4 py-6">
+    <main className="min-h-screen bg-zinc-100 px-4 py-5 sm:px-6 sm:py-6">
       <Toast message={toastMessage} type={toastType} visible={toastVisible} />
 
       <div className="mx-auto max-w-5xl">
@@ -439,7 +467,7 @@ export default function FichaAlunoPage() {
           </button>
         </div>
 
-        <div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <div className="mb-5 rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-sm font-medium text-zinc-500">Ficha do aluno</p>
@@ -448,30 +476,30 @@ export default function FichaAlunoPage() {
               </h1>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-xl bg-zinc-50 px-4 py-3 text-center">
-                <p className="text-xs uppercase tracking-wide text-zinc-500">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="rounded-xl bg-zinc-50 px-3 py-3 sm:px-4 text-center">
+                <p className="text-[11px] uppercase tracking-wide text-zinc-500">
                   Total
                 </p>
-                <p className="mt-1 text-xl font-bold text-zinc-900">
+                <p className="mt-1 text-lg sm:text-xl font-bold text-zinc-900">
                   {totalGeral}
                 </p>
               </div>
 
-              <div className="rounded-xl bg-green-50 px-4 py-3 text-center">
-                <p className="text-xs uppercase tracking-wide text-green-700">
+              <div className="rounded-xl bg-green-50 px-3 py-3 sm:px-4 text-center">
+                <p className="text-[11px] uppercase tracking-wide text-green-700">
                   Passados
                 </p>
-                <p className="mt-1 text-xl font-bold text-green-700">
+                <p className="mt-1 text-lg sm:text-xl font-bold text-green-700">
                   {totalPassados}
                 </p>
               </div>
 
-              <div className="rounded-xl bg-amber-50 px-4 py-3 text-center">
-                <p className="text-xs uppercase tracking-wide text-amber-700">
+              <div className="rounded-xl bg-amber-50 px-3 py-3 sm:px-4 text-center">
+                <p className="text-[11px] uppercase tracking-wide text-amber-700">
                   Faltando
                 </p>
-                <p className="mt-1 text-xl font-bold text-amber-700">
+                <p className="mt-1 text-lg sm:text-xl font-bold text-amber-700">
                   {totalPendentes}
                 </p>
               </div>
@@ -602,12 +630,12 @@ export default function FichaAlunoPage() {
           </div>
         </div>
 
-        <div className="mb-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
           <h2 className="mb-5 text-xl font-semibold text-zinc-900">
             Adicionar tarefa extra
           </h2>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className="text-sm font-medium text-zinc-700">Tipo</label>
               <select
@@ -615,7 +643,7 @@ export default function FichaAlunoPage() {
                 onChange={(e) =>
                   setTipoNovaTarefa(e.target.value as "hino" | "metodo")
                 }
-                className="mt-1 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none focus:border-zinc-900"
+                className="mt-1 w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-zinc-900"
               >
                 <option value="hino">Hino</option>
                 <option value="metodo">Lição de método</option>
@@ -634,7 +662,7 @@ export default function FichaAlunoPage() {
                     ? "Ex: Hino extra 101"
                     : "Ex: Lição 3"
                 }
-                className="mt-1 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none focus:border-zinc-900"
+                className="mt-1 w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-zinc-900"
               />
             </div>
           </div>
@@ -642,7 +670,7 @@ export default function FichaAlunoPage() {
           <button
             onClick={criarTarefaExtra}
             disabled={salvandoNovaTarefa}
-            className="mt-5 w-full rounded-xl bg-black p-3 font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-60"
+            className="mt-5 w-full rounded-xl bg-black p-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-60"
           >
             {salvandoNovaTarefa ? "Salvando..." : "Salvar tarefa extra"}
           </button>
@@ -656,7 +684,7 @@ export default function FichaAlunoPage() {
             return (
               <div
                 key={tarefa.id}
-                className={`rounded-2xl border p-5 shadow-sm transition ${
+                className={`rounded-2xl border p-4 sm:p-5 shadow-sm transition ${
                   passou
                     ? "border-green-200 bg-green-50"
                     : "border-zinc-200 bg-white"
@@ -667,9 +695,7 @@ export default function FichaAlunoPage() {
                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                       <div>
                         <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                          {tarefa.tipo === "hino"
-                            ? "Hino extra"
-                            : "Lição de método"}
+                          {tarefa.tipo === "hino" ? "Hino extra" : "Lição de método"}
                         </p>
                         <h2 className="mt-1 text-lg font-bold text-zinc-900">
                           {tarefa.titulo}
@@ -705,94 +731,46 @@ export default function FichaAlunoPage() {
 
                     {tarefa.tipo === "hino" ? (
                       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                        <div className="rounded-xl border border-zinc-200 bg-white p-3">
-                          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                            Soprano
-                          </p>
-                          <input
-                            type="date"
-                            value={tarefa.soprano || ""}
-                            onChange={(e) =>
-                              salvarCampoTarefaExtra(
-                                tarefa.id,
-                                "soprano",
-                                e.target.value
-                              )
-                            }
-                            className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none focus:border-zinc-900"
-                          />
-                        </div>
+                        <DateField
+                          label="Soprano"
+                          value={tarefa.soprano}
+                          onChange={(value) =>
+                            salvarCampoTarefaExtra(tarefa.id, "soprano", value)
+                          }
+                        />
 
-                        <div className="rounded-xl border border-zinc-200 bg-white p-3">
-                          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                            Contralto
-                          </p>
-                          <input
-                            type="date"
-                            value={tarefa.contralto || ""}
-                            onChange={(e) =>
-                              salvarCampoTarefaExtra(
-                                tarefa.id,
-                                "contralto",
-                                e.target.value
-                              )
-                            }
-                            className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none focus:border-zinc-900"
-                          />
-                        </div>
+                        <DateField
+                          label="Contralto"
+                          value={tarefa.contralto}
+                          onChange={(value) =>
+                            salvarCampoTarefaExtra(tarefa.id, "contralto", value)
+                          }
+                        />
 
-                        <div className="rounded-xl border border-zinc-200 bg-white p-3">
-                          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                            Tenor
-                          </p>
-                          <input
-                            type="date"
-                            value={tarefa.tenor || ""}
-                            onChange={(e) =>
-                              salvarCampoTarefaExtra(
-                                tarefa.id,
-                                "tenor",
-                                e.target.value
-                              )
-                            }
-                            className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none focus:border-zinc-900"
-                          />
-                        </div>
+                        <DateField
+                          label="Tenor"
+                          value={tarefa.tenor}
+                          onChange={(value) =>
+                            salvarCampoTarefaExtra(tarefa.id, "tenor", value)
+                          }
+                        />
 
-                        <div className="rounded-xl border border-zinc-200 bg-white p-3">
-                          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                            Baixo
-                          </p>
-                          <input
-                            type="date"
-                            value={tarefa.baixo || ""}
-                            onChange={(e) =>
-                              salvarCampoTarefaExtra(
-                                tarefa.id,
-                                "baixo",
-                                e.target.value
-                              )
-                            }
-                            className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none focus:border-zinc-900"
-                          />
-                        </div>
+                        <DateField
+                          label="Baixo"
+                          value={tarefa.baixo}
+                          onChange={(value) =>
+                            salvarCampoTarefaExtra(tarefa.id, "baixo", value)
+                          }
+                        />
                       </div>
                     ) : (
-                      <div className="mt-4 rounded-xl border border-zinc-200 bg-white p-3">
-                        <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                          Data de conclusão
-                        </p>
-                        <input
-                          type="date"
-                          value={tarefa.concluido_em || ""}
-                          onChange={(e) =>
-                            salvarCampoTarefaExtra(
-                              tarefa.id,
-                              "concluido_em",
-                              e.target.value
-                            )
+                      <div className="mt-4">
+                        <DateField
+                          label="Data de conclusão"
+                          value={tarefa.concluido_em}
+                          onChange={(value) =>
+                            salvarCampoTarefaExtra(tarefa.id, "concluido_em", value)
                           }
-                          className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none focus:border-zinc-900"
                         />
                       </div>
                     )}
@@ -803,7 +781,7 @@ export default function FichaAlunoPage() {
                       Editando tarefa
                     </h3>
 
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-3 sm:grid-cols-2">
                       <div>
                         <label className="text-sm font-medium text-zinc-700">
                           Tipo
@@ -813,7 +791,7 @@ export default function FichaAlunoPage() {
                           onChange={(e) =>
                             setEditTipoTarefa(e.target.value as "hino" | "metodo")
                           }
-                          className="mt-1 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none focus:border-zinc-900"
+                          className="mt-1 w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-zinc-900"
                         >
                           <option value="hino">Hino</option>
                           <option value="metodo">Lição de método</option>
@@ -827,7 +805,7 @@ export default function FichaAlunoPage() {
                         <input
                           value={editTituloTarefa}
                           onChange={(e) => setEditTituloTarefa(e.target.value)}
-                          className="mt-1 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none focus:border-zinc-900"
+                          className="mt-1 w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-zinc-900"
                         />
                       </div>
                     </div>
@@ -838,9 +816,7 @@ export default function FichaAlunoPage() {
                         disabled={salvandoEdicaoTarefa}
                         className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-60"
                       >
-                        {salvandoEdicaoTarefa
-                          ? "Salvando..."
-                          : "Salvar alterações"}
+                        {salvandoEdicaoTarefa ? "Salvando..." : "Salvar alterações"}
                       </button>
 
                       <button
@@ -857,7 +833,7 @@ export default function FichaAlunoPage() {
           })}
 
           {tarefasFiltradas.length === 0 && (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
               <p className="text-zinc-600">
                 Nenhuma tarefa encontrada nesse filtro.
               </p>
