@@ -77,13 +77,91 @@ function tarefaExtraConcluida(tarefa: TarefaExtra, aluno: Aluno | null) {
   return Boolean(dataPrincipal && dataAlternativa);
 }
 
+function isoParaBr(data: string | null) {
+  if (!data) return "";
+  const partes = data.split("-");
+  if (partes.length !== 3) return "";
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+function brParaIso(data: string) {
+  const limpa = data.trim();
+  if (!limpa) return null;
+
+  const match = limpa.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!match) return null;
+
+  const dia = Number(match[1]);
+  const mes = Number(match[2]);
+  const ano = Number(match[3]);
+
+  if (mes < 1 || mes > 12) return null;
+  if (dia < 1 || dia > 31) return null;
+  if (ano < 2000 || ano > 2100) return null;
+
+  const date = new Date(ano, mes - 1, dia);
+  if (
+    date.getFullYear() !== ano ||
+    date.getMonth() !== mes - 1 ||
+    date.getDate() !== dia
+  ) {
+    return null;
+  }
+
+  return `${ano.toString().padStart(4, "0")}-${mes
+    .toString()
+    .padStart(2, "0")}-${dia.toString().padStart(2, "0")}`;
+}
+
+function aplicarMascaraData(valor: string) {
+  const numeros = valor.replace(/\D/g, "").slice(0, 8);
+
+  if (numeros.length <= 2) return numeros;
+  if (numeros.length <= 4) return `${numeros.slice(0, 2)}/${numeros.slice(2)}`;
+  return `${numeros.slice(0, 2)}/${numeros.slice(2, 4)}/${numeros.slice(4)}`;
+}
+
 type DateFieldProps = {
   label: string;
   value: string | null;
-  onChange: (value: string) => void;
+  onSave: (value: string | null) => Promise<void> | void;
+  onError: (message: string) => void;
+  saving?: boolean;
 };
 
-function DateField({ label, value, onChange }: DateFieldProps) {
+function DateField({
+  label,
+  value,
+  onSave,
+  onError,
+  saving = false,
+}: DateFieldProps) {
+  const [texto, setTexto] = useState(isoParaBr(value));
+
+  useEffect(() => {
+    setTexto(isoParaBr(value));
+  }, [value]);
+
+  async function handleSalvar() {
+    if (!texto.trim()) {
+      await onSave(null);
+      return;
+    }
+
+    const iso = brParaIso(texto);
+    if (!iso) {
+      onError("Digite a data no formato dd/mm/aaaa.");
+      return;
+    }
+
+    await onSave(iso);
+  }
+
+  async function handleLimpar() {
+    setTexto("");
+    await onSave(null);
+  }
+
   return (
     <div className="rounded-xl border border-zinc-200 bg-white p-3">
       <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
@@ -92,19 +170,33 @@ function DateField({ label, value, onChange }: DateFieldProps) {
 
       <div className="mt-2 space-y-2">
         <input
-          type="date"
-          value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
-          className="block w-full max-w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900"
+          type="text"
+          inputMode="numeric"
+          placeholder="dd/mm/aaaa"
+          value={texto}
+          onChange={(e) => setTexto(aplicarMascaraData(e.target.value))}
+          className="block w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900"
         />
 
-        <button
-          type="button"
-          onClick={() => onChange("")}
-          className="block w-full rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100"
-        >
-          Limpar
-        </button>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={handleSalvar}
+            disabled={saving}
+            className="rounded-xl bg-zinc-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-60"
+          >
+            Salvar
+          </button>
+
+          <button
+            type="button"
+            onClick={handleLimpar}
+            disabled={saving}
+            className="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100 disabled:opacity-60"
+          >
+            Limpar
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -278,15 +370,13 @@ export default function FichaAlunoPage() {
   async function salvarCampoTarefaExtra(
     tarefaId: number,
     campo: "concluido_em" | "soprano" | "contralto" | "tenor" | "baixo",
-    valor: string
+    valor: string | null
   ) {
-    const valorFinal = valor || null;
-
     setSalvandoCampo(true);
 
     const { error } = await supabase
       .from("aluno_tarefas_extras")
-      .update({ [campo]: valorFinal })
+      .update({ [campo]: valor })
       .eq("id", tarefaId);
 
     setSalvandoCampo(false);
@@ -299,7 +389,7 @@ export default function FichaAlunoPage() {
 
     setTarefasExtras((prev) =>
       prev.map((tarefa) =>
-        tarefa.id === tarefaId ? { ...tarefa, [campo]: valorFinal } : tarefa
+        tarefa.id === tarefaId ? { ...tarefa, [campo]: valor } : tarefa
       )
     );
 
@@ -730,11 +820,13 @@ export default function FichaAlunoPage() {
                     </div>
 
                     {tarefa.tipo === "hino" ? (
-                      <div className="mt-4 grid gap-3 2xl:grid-cols-2">
+                      <div className="mt-4 grid gap-3">
                         <DateField
                           label="Soprano"
                           value={tarefa.soprano}
-                          onChange={(value) =>
+                          saving={salvandoCampo}
+                          onError={(msg) => showToast(msg, "error")}
+                          onSave={(value) =>
                             salvarCampoTarefaExtra(tarefa.id, "soprano", value)
                           }
                         />
@@ -742,7 +834,9 @@ export default function FichaAlunoPage() {
                         <DateField
                           label="Contralto"
                           value={tarefa.contralto}
-                          onChange={(value) =>
+                          saving={salvandoCampo}
+                          onError={(msg) => showToast(msg, "error")}
+                          onSave={(value) =>
                             salvarCampoTarefaExtra(tarefa.id, "contralto", value)
                           }
                         />
@@ -750,7 +844,9 @@ export default function FichaAlunoPage() {
                         <DateField
                           label="Tenor"
                           value={tarefa.tenor}
-                          onChange={(value) =>
+                          saving={salvandoCampo}
+                          onError={(msg) => showToast(msg, "error")}
+                          onSave={(value) =>
                             salvarCampoTarefaExtra(tarefa.id, "tenor", value)
                           }
                         />
@@ -758,7 +854,9 @@ export default function FichaAlunoPage() {
                         <DateField
                           label="Baixo"
                           value={tarefa.baixo}
-                          onChange={(value) =>
+                          saving={salvandoCampo}
+                          onError={(msg) => showToast(msg, "error")}
+                          onSave={(value) =>
                             salvarCampoTarefaExtra(tarefa.id, "baixo", value)
                           }
                         />
@@ -768,7 +866,9 @@ export default function FichaAlunoPage() {
                         <DateField
                           label="Data de conclusão"
                           value={tarefa.concluido_em}
-                          onChange={(value) =>
+                          saving={salvandoCampo}
+                          onError={(msg) => showToast(msg, "error")}
+                          onSave={(value) =>
                             salvarCampoTarefaExtra(tarefa.id, "concluido_em", value)
                           }
                         />
