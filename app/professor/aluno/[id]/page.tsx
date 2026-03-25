@@ -90,18 +90,18 @@ function DateField({ label, value, onChange }: DateFieldProps) {
         {label}
       </p>
 
-      <div className="mt-2 flex flex-col gap-2 md:flex-row md:items-center">
+      <div className="mt-2 space-y-2">
         <input
           type="date"
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 md:flex-1"
+          className="block w-full max-w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900"
         />
 
         <button
           type="button"
           onClick={() => onChange("")}
-          className="w-full rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100 md:w-auto md:shrink-0"
+          className="block w-full rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100"
         >
           Limpar
         </button>
@@ -430,7 +430,7 @@ export default function FichaAlunoPage() {
       <main className="min-h-screen bg-zinc-100 px-4 py-5 sm:px-6 sm:py-6">
         <div className="mx-auto max-w-5xl">
           <Header title="Painel do Professor" />
-          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
             <p className="text-zinc-600">Carregando ficha do aluno...</p>
           </div>
         </div>
@@ -443,7 +443,7 @@ export default function FichaAlunoPage() {
       <main className="min-h-screen bg-zinc-100 px-4 py-5 sm:px-6 sm:py-6">
         <div className="mx-auto max-w-5xl">
           <Header title="Painel do Professor" />
-          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
             <p className="text-zinc-600">Aluno não encontrado.</p>
           </div>
         </div>
@@ -467,7 +467,7 @@ export default function FichaAlunoPage() {
           </button>
         </div>
 
-        <div className="mb-5 rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
+        <div className="mb-5 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-sm font-medium text-zinc-500">Ficha do aluno</p>
@@ -477,29 +477,29 @@ export default function FichaAlunoPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-2 sm:gap-3">
-              <div className="rounded-xl bg-zinc-50 px-3 py-3 sm:px-4 text-center">
+              <div className="rounded-xl bg-zinc-50 px-3 py-3 text-center sm:px-4">
                 <p className="text-[11px] uppercase tracking-wide text-zinc-500">
                   Total
                 </p>
-                <p className="mt-1 text-lg sm:text-xl font-bold text-zinc-900">
+                <p className="mt-1 text-lg font-bold text-zinc-900 sm:text-xl">
                   {totalGeral}
                 </p>
               </div>
 
-              <div className="rounded-xl bg-green-50 px-3 py-3 sm:px-4 text-center">
+              <div className="rounded-xl bg-green-50 px-3 py-3 text-center sm:px-4">
                 <p className="text-[11px] uppercase tracking-wide text-green-700">
                   Passados
                 </p>
-                <p className="mt-1 text-lg sm:text-xl font-bold text-green-700">
+                <p className="mt-1 text-lg font-bold text-green-700 sm:text-xl">
                   {totalPassados}
                 </p>
               </div>
 
-              <div className="rounded-xl bg-amber-50 px-3 py-3 sm:px-4 text-center">
+              <div className="rounded-xl bg-amber-50 px-3 py-3 text-center sm:px-4">
                 <p className="text-[11px] uppercase tracking-wide text-amber-700">
                   Faltando
                 </p>
-                <p className="mt-1 text-lg sm:text-xl font-bold text-amber-700">
+                <p className="mt-1 text-lg font-bold text-amber-700 sm:text-xl">
                   {totalPendentes}
                 </p>
               </div>
@@ -562,7 +562,7 @@ export default function FichaAlunoPage() {
               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                 filtroStatus === "todos"
                   ? "bg-zinc-900 text-white"
-                  : "bg-white text-zinc-700 border border-zinc-300 hover:bg-zinc-50"
+                  : "border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50"
               }`}
             >
               Todos ({totalGeral})
@@ -573,7 +573,7 @@ export default function FichaAlunoPage() {
               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                 filtroStatus === "pendentes"
                   ? "bg-amber-500 text-white"
-                  : "bg-white text-amber-700 border border-amber-300 hover:bg-amber-50"
+                  : "border border-amber-300 bg-white text-amber-700 hover:bg-amber-50"
               }`}
             >
               Pendentes ({totalPendentes})
@@ -584,7 +584,7 @@ export default function FichaAlunoPage() {
               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                 filtroStatus === "concluidos"
                   ? "bg-green-600 text-white"
-                  : "bg-white text-green-700 border border-green-300 hover:bg-green-50"
+                  : "border border-green-300 bg-white text-green-700 hover:bg-green-50"
               }`}
             >
               Concluídos ({totalPassados})
@@ -600,7 +600,7 @@ export default function FichaAlunoPage() {
               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                 filtroTipo === "todos"
                   ? "bg-zinc-900 text-white"
-                  : "bg-white text-zinc-700 border border-zinc-300 hover:bg-zinc-50"
+                  : "border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50"
               }`}
             >
               Todos ({totalGeral})
@@ -611,7 +611,7 @@ export default function FichaAlunoPage() {
               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                 filtroTipo === "hino"
                   ? "bg-blue-600 text-white"
-                  : "bg-white text-blue-700 border border-blue-300 hover:bg-blue-50"
+                  : "border border-blue-300 bg-white text-blue-700 hover:bg-blue-50"
               }`}
             >
               Hinos ({totalHinos})
@@ -622,7 +622,7 @@ export default function FichaAlunoPage() {
               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                 filtroTipo === "metodo"
                   ? "bg-purple-600 text-white"
-                  : "bg-white text-purple-700 border border-purple-300 hover:bg-purple-50"
+                  : "border border-purple-300 bg-white text-purple-700 hover:bg-purple-50"
               }`}
             >
               Lição de método ({totalMetodos})
@@ -630,7 +630,7 @@ export default function FichaAlunoPage() {
           </div>
         </div>
 
-        <div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
+        <div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
           <h2 className="mb-5 text-xl font-semibold text-zinc-900">
             Adicionar tarefa extra
           </h2>
@@ -684,7 +684,7 @@ export default function FichaAlunoPage() {
             return (
               <div
                 key={tarefa.id}
-                className={`rounded-2xl border p-4 sm:p-5 shadow-sm transition ${
+                className={`rounded-2xl border p-4 shadow-sm transition sm:p-5 ${
                   passou
                     ? "border-green-200 bg-green-50"
                     : "border-zinc-200 bg-white"
@@ -692,7 +692,7 @@ export default function FichaAlunoPage() {
               >
                 {!estaEditando ? (
                   <>
-                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                       <div>
                         <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
                           {tarefa.tipo === "hino" ? "Hino extra" : "Lição de método"}
@@ -730,7 +730,7 @@ export default function FichaAlunoPage() {
                     </div>
 
                     {tarefa.tipo === "hino" ? (
-                      <div className="mt-4 grid gap-3 xl:grid-cols-2">
+                      <div className="mt-4 grid gap-3 2xl:grid-cols-2">
                         <DateField
                           label="Soprano"
                           value={tarefa.soprano}
@@ -833,7 +833,7 @@ export default function FichaAlunoPage() {
           })}
 
           {tarefasFiltradas.length === 0 && (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
               <p className="text-zinc-600">
                 Nenhuma tarefa encontrada nesse filtro.
               </p>
