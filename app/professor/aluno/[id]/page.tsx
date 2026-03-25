@@ -85,23 +85,23 @@ type DateFieldProps = {
 
 function DateField({ label, value, onChange }: DateFieldProps) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-3 sm:p-4">
+    <div className="rounded-xl border border-zinc-200 bg-white p-3">
       <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
         {label}
       </p>
 
-      <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+      <div className="mt-2 flex items-center gap-2">
         <input
           type="date"
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-zinc-900"
+          className="min-w-0 flex-1 rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900"
         />
 
         <button
           type="button"
           onClick={() => onChange("")}
-          className="rounded-xl border border-red-300 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+          className="shrink-0 rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-100"
         >
           Limpar
         </button>
